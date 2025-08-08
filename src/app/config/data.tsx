@@ -258,8 +258,8 @@ export const timelineData: TimelineItem[] = [
         </p>
 
         <ImageGallery
-          images={[1, 2, 3, 4, 5, 6, 7].map((n) => ({
-            src: `sombot/sombot(${n}).png`,
+          images={[1].map((n) => ({
+            src: `cbk/cbk${n}.png`,
             alt: ``,
           }))}
         />
