@@ -2,8 +2,8 @@
 import { cn } from "@/lib/utils";
 import React, { useEffect, useRef, useState } from "react";
 import { createNoise3D } from "simplex-noise";
-import { useTheme } from "next-themes";
 import { CollapsedThemeToggle } from "./collapsed-theme-toggle";
+import { useTheme } from "next-themes";
 
 export const WavyBackground = ({
   children,
@@ -20,24 +20,26 @@ export const WavyBackground = ({
   children?: any;
   className?: string;
   containerClassName?: string;
-  colors?: string[];
+  colors?: {
+    light: string[];
+    dark: string[];
+  };
   waveWidth?: number;
-  backgroundFill?: string;
+  backgroundFill?: {
+    light: string;
+    dark: string;
+  };
   blur?: number;
   speed?: "slow" | "fast";
   waveOpacity?: number;
   [key: string]: any;
 }) => {
+  const { theme } = useTheme();
   const noise = createNoise3D();
-  let w: number,
-    h: number,
-    nt: number,
-    i: number,
-    x: number,
-    ctx: any,
-    canvas: any;
+  const animationRef = useRef<number | null>(null); // Initialize as null
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const noiseOffset = useRef<number>(0); // Initialize with 0
+  const [isSafari, setIsSafari] = useState(false);
 
   const getSpeed = () => {
     switch (speed) {
@@ -49,81 +51,71 @@ export const WavyBackground = ({
         return 0.001;
     }
   };
-  const { theme } = useTheme();
 
-  const init = () => {
-    if (!containerRef.current || !canvasRef.current) return;
-
-    canvas = canvasRef.current;
-    ctx = canvas.getContext("2d");
-
-    // Get container dimensions instead of window dimensions
-    const container = containerRef.current;
-    w = ctx.canvas.width = container.clientWidth;
-    h = ctx.canvas.height = container.clientHeight;
-
-    ctx.filter = `blur(${blur}px)`;
-    nt = 0;
-
-    const handleResize = () => {
-      if (!containerRef.current) return;
-      const container = containerRef.current;
-      w = ctx.canvas.width = container.clientWidth;
-      h = ctx.canvas.height = container.clientHeight;
-      ctx.filter = `blur(${blur}px)`;
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+  const getWaveColors = () => {
+    if (!colors) {
+      return theme === "dark"
+        ? ["#38bdf8", "#818cf8", "#c084fc", "#e879f9", "#22d3ee"]
+        : ["#3b82f6", "#6366f1", "#8b5cf6", "#d946ef", "#06b6d4"];
+    }
+    return theme === "dark" ? colors.dark : colors.light;
   };
 
-  const waveColors =
-    colors ??
-    (theme === "dark"
-      ? ["#0ea5e9", "#6366f1", "#a855f7", "#d946ef", "#06b6d4"]
-      : ["#60a5fa", "#a5b4fc", "#c4b5fd", "#f0abfc", "#67e8f9"]);
+  const getBackgroundFill = () => {
+    if (!backgroundFill) {
+      return theme === "dark" ? "black" : "white";
+    }
+    return theme === "dark" ? backgroundFill.dark : backgroundFill.light;
+  };
 
-  const drawWave = (n: number) => {
-    nt += getSpeed();
-    for (i = 0; i < n; i++) {
+  const initCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  };
+
+  const drawWaves = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const w = canvas.width;
+    const h = canvas.height;
+
+    ctx.fillStyle = getBackgroundFill();
+    ctx.globalAlpha = waveOpacity;
+    ctx.fillRect(0, 0, w, h);
+    ctx.filter = `blur(${blur}px)`;
+
+    const waveColors = getWaveColors();
+    const speedFactor = getSpeed();
+
+    for (let i = 0; i < 5; i++) {
       ctx.beginPath();
-      ctx.lineWidth = waveWidth || 40;
+      ctx.lineWidth = waveWidth || 50;
       ctx.strokeStyle = waveColors[i % waveColors.length];
-      for (x = 0; x < w; x += 5) {
-        var y = noise(x / 800, 0.3 * i, nt) * 80;
+
+      for (let x = 0; x < w; x += 5) {
+        const y = noise(x / 800, i * 0.3, noiseOffset.current) * 100;
         ctx.lineTo(x, y + h * 0.5);
       }
+
       ctx.stroke();
       ctx.closePath();
     }
+
+    noiseOffset.current += speedFactor;
   };
 
-  let animationId: number;
-  const render = () => {
-    if (!ctx) return;
-
-    ctx.fillStyle =
-      backgroundFill || (theme === "dark" ? "#000000FF" : "#f8fafc");
-    ctx.globalAlpha = waveOpacity || 0.5;
-    ctx.fillRect(0, 0, w, h);
-    drawWave(5);
-    animationId = requestAnimationFrame(render);
+  const animate = () => {
+    drawWaves();
+    animationRef.current = requestAnimationFrame(animate);
   };
 
-  useEffect(() => {
-    const cleanup = init();
-    render();
-
-    return () => {
-      cancelAnimationFrame(animationId);
-      cleanup?.();
-    };
-  }, [theme]);
-
-  const [isSafari, setIsSafari] = useState(false);
   useEffect(() => {
     setIsSafari(
       typeof window !== "undefined" &&
@@ -132,24 +124,43 @@ export const WavyBackground = ({
     );
   }, []);
 
+  useEffect(() => {
+    initCanvas();
+    animationRef.current = requestAnimationFrame(animate);
+
+    const handleResize = () => {
+      initCanvas();
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [theme]); // Re-run when theme changes
+
   return (
     <div
-      ref={containerRef}
       className={cn(
-        "h-screen w-full flex flex-col items-center justify-center relative overflow-hidden", // Added overflow-hidden
+        "h-screen flex flex-col items-center justify-center",
         containerClassName
       )}
     >
       <canvas
-        className="absolute inset-0 w-full h-full" // Changed positioning
+        className="absolute inset-0 z-0"
         ref={canvasRef}
         id="canvas"
         style={{
           ...(isSafari ? { filter: `blur(${blur}px)` } : {}),
         }}
-      ></canvas>
-      <CollapsedThemeToggle />
-      <div className={cn("relative z-10 w-full", className)} {...props}>
+      />
+      <div className="w-12 h-12">
+        <CollapsedThemeToggle />
+      </div>
+      <div className={cn("relative z-10", className)} {...props}>
         {children}
       </div>
     </div>
