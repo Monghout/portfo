@@ -204,7 +204,7 @@ export const timelineData: TimelineItem[] = [
           Canvas Logo Design
         </p>
         <p className="mb-8 text-xs font-normal max-w-full object-cover text-neutral-800 md:text-sm dark:text-neutral-200">
-          Poster Design
+          Logo Design
         </p>
         <ImageGallery
           images={[1, 2, 3].map((n) => ({
@@ -230,9 +230,7 @@ export const timelineData: TimelineItem[] = [
             Sombot
           </a>
         </p>
-        <p className="mb-8 text-xs font-normal max-w-full object-cover text-neutral-800 md:text-sm dark:text-neutral-200">
-          Poster Design
-        </p>
+
         <ImageGallery
           images={[1, 2, 3, 4, 5, 6, 7].map((n) => ({
             src: `sombot/sombot${n}.png`,
