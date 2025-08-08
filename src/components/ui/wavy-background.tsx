@@ -36,9 +36,9 @@ export const WavyBackground = ({
 }) => {
   const { theme } = useTheme();
   const noise = createNoise3D();
-  const animationRef = useRef<number | null>(null); // Initialize as null
+  const animationRef = useRef<number | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const noiseOffset = useRef<number>(0); // Initialize with 0
+  const noiseOffset = useRef<number>(0);
   const [isSafari, setIsSafari] = useState(false);
 
   const getSpeed = () => {
@@ -72,8 +72,15 @@ export const WavyBackground = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const container = canvas.parentElement;
+    if (!container) return;
+
+    // Use the container's width instead of window.innerWidth
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    canvas.width = width;
+    canvas.height = height;
   };
 
   const drawWaves = () => {
@@ -86,6 +93,7 @@ export const WavyBackground = ({
     const w = canvas.width;
     const h = canvas.height;
 
+    ctx.clearRect(0, 0, w, h);
     ctx.fillStyle = getBackgroundFill();
     ctx.globalAlpha = waveOpacity;
     ctx.fillRect(0, 0, w, h);
@@ -99,7 +107,8 @@ export const WavyBackground = ({
       ctx.lineWidth = waveWidth || 50;
       ctx.strokeStyle = waveColors[i % waveColors.length];
 
-      for (let x = 0; x < w; x += 5) {
+      // Adjust the wave generation to stay within bounds
+      for (let x = 0; x <= w; x += 5) {
         const y = noise(x / 800, i * 0.3, noiseOffset.current) * 100;
         ctx.lineTo(x, y + h * 0.5);
       }
@@ -140,17 +149,17 @@ export const WavyBackground = ({
       }
       window.removeEventListener("resize", handleResize);
     };
-  }, [theme]); // Re-run when theme changes
+  }, [theme]);
 
   return (
     <div
       className={cn(
-        "h-screen flex flex-col items-center justify-center",
+        "h-screen flex flex-col items-center justify-center relative overflow-hidden", // Added overflow-hidden here
         containerClassName
       )}
     >
       <canvas
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 block w-full h-full" // Added block and full dimensions
         ref={canvasRef}
         id="canvas"
         style={{
@@ -158,7 +167,9 @@ export const WavyBackground = ({
         }}
       />
 
-      <div className={cn("relative z-10", className)} {...props}>
+      <div className={cn("relative z-10 w-full", className)} {...props}>
+        {" "}
+        {/* Added w-full */}
         {children}
       </div>
     </div>

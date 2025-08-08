@@ -57,7 +57,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                 e.stopPropagation();
                 goPrev();
               }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-20 rounded-full p-3 text-white hover:bg-opacity-30 transition z-10"
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-20 rounded-full p-3 text-black hover:bg-opacity-30 transition z-10"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +80,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                 e.stopPropagation();
                 goNext();
               }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-20 rounded-full p-3 text-white hover:bg-opacity-30 transition z-10"
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white bg-opacity-20 rounded-full p-3 text-black hover:bg-opacity-30 transition z-10"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +108,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
 
             {/* Close button */}
             <button
-              className="absolute top-4 right-4 bg-white bg-opacity-20 rounded-full p-2 text-white hover:bg-opacity-30 transition"
+              className="absolute top-4 right-4 bg-white bg-opacity-20 rounded-full p-2 text-black hover:bg-opacity-30 transition"
               onClick={(e) => {
                 e.stopPropagation();
                 closeImage();

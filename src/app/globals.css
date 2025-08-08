@@ -114,19 +114,21 @@
 }
 
 @layer base {
-  * {
-    --background: 0 0% 100%;
+  :root {
+    --radius: 0.625rem;
+    --background: oklch(1 0 0);
+    /* ... rest of light vars ... */
+  }
 
+  .dark {
+    --background: oklch(0.145 0 0);
+    /* ... rest of dark vars ... */
+  }
+
+  * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-@layer base {
-  * {
-    @apply border-border;
-  }
+
   body {
     @apply bg-background text-foreground;
   }
