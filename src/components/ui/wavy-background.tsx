@@ -157,9 +157,7 @@ export const WavyBackground = ({
           ...(isSafari ? { filter: `blur(${blur}px)` } : {}),
         }}
       />
-      <div className="w-12 h-12">
-        <CollapsedThemeToggle />
-      </div>
+
       <div className={cn("relative z-10", className)} {...props}>
         {children}
       </div>

@@ -14,7 +14,7 @@ export function CollapsedThemeToggle() {
 
   if (!mounted) {
     return (
-      <button className="flex items-center justify-center w-full px-3 py-2 rounded-lg text-white dark:text-slate-300 hover:bg-slate-100 hover:dark:text-white transition-colors duration-200">
+      <button className="flex items-center justify-center w-full px-3 py-2 rounded-lg text-white dark:text-slate-300 hover:bg-slate-100 hover:dark:text-black transition-colors duration-200">
         <Sun className="w-5 h-5" />
       </button>
     );
@@ -31,7 +31,7 @@ export function CollapsedThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="flex items-center justify-center w-full px-3 py-2 rounded-lg text-black dark:text-slate-300 hover:bg-slate-100 hover:dark:text-white hover:text-black transition-colors duration-200"
+      className="flex items-center justify-center w-full px-3 py-2 rounded-lg text-black dark:text-slate-300 hover:bg-slate-100 hover:dark:text-black hover:text-black transition-colors duration-200"
       title={`Current theme: ${theme}. Click to cycle through themes.`}
     >
       <div className="relative w-5 h-5">

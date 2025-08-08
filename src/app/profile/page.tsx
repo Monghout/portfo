@@ -81,9 +81,6 @@ export default function ProfilePage() {
         <DesktopNav />
         <MobileNav />
       </div>{" "}
-      <div className="absolute bg-transparent z-50 right-0 pr-10 pt-5">
-        <CollapsedThemeToggle />
-      </div>
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         {" "}

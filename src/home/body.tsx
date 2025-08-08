@@ -4,6 +4,7 @@ import { DesktopNav } from "@/home/nav/desktop";
 import { MobileNav } from "@/home/nav/mobile";
 import Display from "@/home/display/display";
 import { ModeToggle } from "@/components/ui/modeToggle";
+import { Dark } from "./nav/dark";
 
 export default function FloatingNav() {
   return (
@@ -16,6 +17,7 @@ export default function FloatingNav() {
       {/* Bottom Section - Grows and scrolls */}
       <div className="">
         <>
+          <Dark />
           <DesktopNav />
           <MobileNav />
           {/* Main Content Area */}

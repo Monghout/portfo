@@ -33,6 +33,8 @@ export function DesktopNav() {
 
           {/* Settings and Theme toggle at bottom */}
           <div className="mt-auto space-y-2">
+            {" "}
+            <CollapsedThemeToggle />
             {/* <SignInButton>
               <a className="flex items-center space-x-3 px-3 py-2 rounded-lg text-black dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200 relative overflow-hidden">
                 <span className="text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75">
@@ -40,7 +42,6 @@ export function DesktopNav() {
                 </span>
               </a>
             </SignInButton> */}
-
             {/* Theme Toggle - Works in both collapsed and expanded states */}
           </div>
         </nav>
