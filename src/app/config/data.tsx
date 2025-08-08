@@ -184,7 +184,7 @@ export const timelineData: TimelineItem[] = [
     content: (
       <div>
         <p className="mb-4 text-2xl font-bold text-neutral-800 md:text-sm dark:text-neutral-200">
-          Adobe Photoshop - Class 1
+          Figma Poster
         </p>
         <div className="grid grid-cols-4 md:grid-cols-4 gap-3 md:h-1/2">
           <ImageGallery
