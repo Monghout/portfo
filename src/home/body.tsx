@@ -17,7 +17,6 @@ export default function FloatingNav() {
       {/* Bottom Section - Grows and scrolls */}
       <div className="">
         <>
-          <Dark />
           <DesktopNav />
           <MobileNav />
           {/* Main Content Area */}

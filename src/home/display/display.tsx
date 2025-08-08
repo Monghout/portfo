@@ -45,7 +45,6 @@ export default function display() {
             </p>
             <TypewriterEffectSmooth words={words} />{" "}
           </div>{" "}
-          <Dark />
         </WavyBackground>
         <Timeline data={timelineData} />
       </div>
