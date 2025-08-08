@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import React, { useEffect, useRef, useState } from "react";
 import { createNoise3D } from "simplex-noise";
 import { useTheme } from "next-themes";
+import { CollapsedThemeToggle } from "./collapsed-theme-toggle";
 
 export const WavyBackground = ({
   children,
@@ -36,6 +37,8 @@ export const WavyBackground = ({
     ctx: any,
     canvas: any;
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const getSpeed = () => {
     switch (speed) {
       case "slow":
@@ -49,35 +52,49 @@ export const WavyBackground = ({
   const { theme } = useTheme();
 
   const init = () => {
+    if (!containerRef.current || !canvasRef.current) return;
+
     canvas = canvasRef.current;
     ctx = canvas.getContext("2d");
-    w = ctx.canvas.width = window.innerWidth;
-    h = ctx.canvas.height = window.innerHeight;
+
+    // Get container dimensions instead of window dimensions
+    const container = containerRef.current;
+    w = ctx.canvas.width = container.clientWidth;
+    h = ctx.canvas.height = container.clientHeight;
+
     ctx.filter = `blur(${blur}px)`;
     nt = 0;
-    window.onresize = function () {
-      w = ctx.canvas.width = window.innerWidth;
-      h = ctx.canvas.height = window.innerHeight;
+
+    const handleResize = () => {
+      if (!containerRef.current) return;
+      const container = containerRef.current;
+      w = ctx.canvas.width = container.clientWidth;
+      h = ctx.canvas.height = container.clientHeight;
       ctx.filter = `blur(${blur}px)`;
     };
-    render();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   };
 
   const waveColors =
     colors ??
     (theme === "dark"
-      ? ["#0ea5e9", "#6366f1", "#a855f7", "#d946ef", "#06b6d4"] // brighter neons for dark
+      ? ["#0ea5e9", "#6366f1", "#a855f7", "#d946ef", "#06b6d4"]
       : ["#60a5fa", "#a5b4fc", "#c4b5fd", "#f0abfc", "#67e8f9"]);
 
   const drawWave = (n: number) => {
     nt += getSpeed();
     for (i = 0; i < n; i++) {
       ctx.beginPath();
-      ctx.lineWidth = waveWidth || 50;
+      ctx.lineWidth = waveWidth || 40;
       ctx.strokeStyle = waveColors[i % waveColors.length];
       for (x = 0; x < w; x += 5) {
-        var y = noise(x / 800, 0.3 * i, nt) * 100;
-        ctx.lineTo(x, y + h * 0.5); // adjust for height, currently at 50% of the container
+        var y = noise(x / 800, 0.3 * i, nt) * 80;
+        ctx.lineTo(x, y + h * 0.5);
       }
       ctx.stroke();
       ctx.closePath();
@@ -86,8 +103,10 @@ export const WavyBackground = ({
 
   let animationId: number;
   const render = () => {
+    if (!ctx) return;
+
     ctx.fillStyle =
-      backgroundFill || (theme === "dark" ? "#000000FF" : "#f8fafc"); // slate-900 / slate-50
+      backgroundFill || (theme === "dark" ? "#000000FF" : "#f8fafc");
     ctx.globalAlpha = waveOpacity || 0.5;
     ctx.fillRect(0, 0, w, h);
     drawWave(5);
@@ -95,16 +114,17 @@ export const WavyBackground = ({
   };
 
   useEffect(() => {
-    init();
+    const cleanup = init();
+    render();
 
     return () => {
       cancelAnimationFrame(animationId);
+      cleanup?.();
     };
-  }, [theme]); // 👈 re-run when theme changes
+  }, [theme]);
 
   const [isSafari, setIsSafari] = useState(false);
   useEffect(() => {
-    // I'm sorry but i have got to support it on safari.
     setIsSafari(
       typeof window !== "undefined" &&
         navigator.userAgent.includes("Safari") &&
@@ -114,20 +134,22 @@ export const WavyBackground = ({
 
   return (
     <div
+      ref={containerRef}
       className={cn(
-        "h-screen flex flex-col items-center justify-center",
+        "h-screen w-full flex flex-col items-center justify-center relative overflow-hidden", // Added overflow-hidden
         containerClassName
       )}
     >
       <canvas
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 w-full h-full" // Changed positioning
         ref={canvasRef}
         id="canvas"
         style={{
           ...(isSafari ? { filter: `blur(${blur}px)` } : {}),
         }}
       ></canvas>
-      <div className={cn("relative z-10", className)} {...props}>
+      <CollapsedThemeToggle />
+      <div className={cn("relative z-10 w-full", className)} {...props}>
         {children}
       </div>
     </div>

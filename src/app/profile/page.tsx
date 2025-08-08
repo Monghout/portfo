@@ -30,6 +30,7 @@ import {
 import { DesktopNav } from "@/home/nav/desktop";
 import { MobileNav } from "@/home/nav/mobile";
 import { EvervaultCard } from "@/components/ui/hover";
+import { CollapsedThemeToggle } from "@/components/ui/collapsed-theme-toggle";
 
 export default function ProfilePage() {
   const skills = [
@@ -47,7 +48,7 @@ export default function ProfilePage() {
       description:
         "QR-code based event ticketing platform with real-time analytics and payment integration",
       url: "https://sombot.vercel.app",
-      tech: ["Next.js", "MongoDB", "Stripe", "QR Codes"],
+      tech: ["Next.js", "MongoDB", "Stripe Payment APIs", "QR Codes"],
       type: "Team Project",
       status: "Live",
     },
@@ -56,7 +57,13 @@ export default function ProfilePage() {
       description:
         "Live-streaming eCommerce platform with real-time chat and payment processing",
       url: "https://mj-2-camboket.vercel.app",
-      tech: ["React", "WebRTC", "Socket.io", "Payment APIs"],
+      tech: [
+        "Next.js",
+        "Stripe Payment APIs",
+        "Stream Chat APIs",
+        "Clerk Auth",
+        "Mux APIs",
+      ],
       type: "Solo Project",
       status: "Live",
     },
@@ -73,20 +80,22 @@ export default function ProfilePage() {
       <div className="flex-1 overflow-auto">
         <DesktopNav />
         <MobileNav />
+      </div>{" "}
+      <div className="absolute bg-transparent z-50 right-0 pr-10 pt-5">
+        <CollapsedThemeToggle />
       </div>
-      {/* Hero Section */}{" "}
+      {/* Hero Section */}
       <div className="relative overflow-hidden">
+        {" "}
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/5" />
         <div className="max-w-7xl mx-auto px-4 py-16">
           <div className="text-center space-y-6">
             <div className="relative inline-block">
               <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-primary to-primary/60 p-1">
-                <div className="w-full h-full rounded-full bg-background flex items-center justify-center text-4xl font-bold text-primary">
-                  HM
-                </div>
-              </div>
-              <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-background flex items-center justify-center">
-                <div className="w-3 h-3 bg-white rounded-full animate-pulse" />
+                <img
+                  src="/pf.jpg"
+                  className="w-full h-[120px] display: inline rounded-full bg-background items-center object-cover object-top text-4xl font-bold text-primary"
+                ></img>
               </div>
             </div>
 

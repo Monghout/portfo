@@ -292,3 +292,6 @@
 .animate-pulse-slow {
   animation: pulse-slow 8s ease-in-out infinite;
 }
+.text-hover-glow {
+  transition: text-shadow 0.3s ease;
+}

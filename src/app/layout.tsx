@@ -2,18 +2,26 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
-
+import { dark } from "@clerk/themes";
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio - Hak Monghout",
+  title: "ACE PORT - Hak Monghout Portfolio",
 };
 
 export default function RootLayout({
@@ -33,7 +41,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}{" "}
+          <ClerkProvider
+            appearance={{
+              baseTheme: dark,
+            }}
+          >
+            {children}{" "}
+          </ClerkProvider>
         </ThemeProvider>
       </body>
     </html>
