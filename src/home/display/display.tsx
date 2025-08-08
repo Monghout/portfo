@@ -27,8 +27,8 @@ export default function display() {
     <div>
       <WavyBackground className="max-w-full mx-auto pb-20">
         {" "}
-        <div className="flex flex-col items-center justify-center h-[40rem] text-black dark:text-white ">
-          <p className="text-xl">
+        <div className="flex flex-col items-center justify-center h-[40rem] ">
+          <p className=" text-black dark:text-white text-xl">
             <span> Welcome to </span>
             <span className=" text-glow ">Ace Port</span>
           </p>
